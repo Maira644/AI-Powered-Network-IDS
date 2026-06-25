@@ -2,6 +2,14 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 import joblib
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    confusion_matrix
+)
 
 columns = [
     'duration','protocol_type','service','flag','src_bytes',
@@ -91,3 +99,61 @@ joblib.dump(
     encoder_flag,
     "models/flag_encoder.pkl"
 )
+
+model = RandomForestClassifier(
+    n_estimators=100,
+    random_state=42
+)
+
+print("\nTraining model...")
+
+model.fit(X_train, y_train)
+
+print("Training completed!")
+
+y_pred = model.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+
+print("\nAccuracy:")
+print(accuracy)
+
+precision = precision_score(y_test, y_pred)
+
+print("\nPrecision:")
+print(precision)
+
+recall = recall_score(y_test, y_pred)
+
+print("\nRecall:")
+print(recall)
+
+f1 = f1_score(y_test, y_pred)
+
+print("\nF1 Score:")
+print(f1)
+
+cm = confusion_matrix(y_test, y_pred)
+
+print("\nConfusion Matrix:")
+print(cm)
+
+joblib.dump(
+    model,
+    "models/model.pkl"
+)
+
+print("\nModel saved successfully!")
+
+loaded_model = joblib.load(
+    "models/model.pkl"
+)
+
+print("\nModel loaded successfully!")
+
+sample_prediction = loaded_model.predict(
+    X_test.iloc[:1]
+)
+
+print("\nSample Prediction:")
+print(sample_prediction)
