@@ -1,4 +1,7 @@
 from datetime import datetime
+from detect_and_log import detect_flow
+
+processed_flows = set()
 
 flows = {}
 
@@ -24,7 +27,7 @@ def print_flows():
 
     for flow, data in flows.items():
 
-        duration = (
+        data["duration"] = (
             datetime.now()
             - data["start_time"]
         ).total_seconds()
@@ -32,5 +35,15 @@ def print_flows():
         print(f"Flow: {flow[0]} -> {flow[1]}")
         print(f"Packets     : {data['packet_count']}")
         print(f"Total Bytes : {data['total_bytes']}")
-        print(f"Duration    : {duration:.2f} sec")
+        print(f"Duration    : {data['duration']:.2f} sec")
         print("--------------------------------")
+
+        if flow not in processed_flows:
+
+            detect_flow(
+                data,
+                flow[0],
+                flow[1]
+            )
+
+            processed_flows.add(flow)
