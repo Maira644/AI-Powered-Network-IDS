@@ -1,5 +1,5 @@
 from scapy.layers.inet import IP, TCP, UDP
-
+from flow_tracker import update_flow
 
 def process_packet(packet):
 
@@ -17,6 +17,11 @@ def process_packet(packet):
             protocol = "UDP"
 
         packet_length = len(packet)
+        update_flow(
+        source_ip,
+        destination_ip,
+        packet_length
+      )
 
         print("\n=================================")
         print(f"Source IP      : {source_ip}")
