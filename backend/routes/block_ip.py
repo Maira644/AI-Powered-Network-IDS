@@ -1,18 +1,7 @@
-import sys
-import os
-
-sys.path.append(
-    os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..", "..", "database")
-    )
-)
-
 from fastapi import APIRouter
 from pydantic import BaseModel
-from sqlalchemy import insert
-from datetime import datetime
 
-from models import engine, blocked_ips
+from services.block_service import block_ip
 
 router = APIRouter()
 
@@ -23,18 +12,9 @@ class BlockIPRequest(BaseModel):
 
 
 @router.post("/block-ip")
-def block_ip(request: BlockIPRequest):
+def block_ip_route(request: BlockIPRequest):
 
-    query = insert(blocked_ips).values(
-        ip_address=request.ip_address,
-        reason=request.reason,
-        blocked_at=datetime.now()
+    return block_ip(
+        request.ip_address,
+        request.reason
     )
-
-    with engine.begin() as connection:
-        connection.execute(query)
-
-    return {
-        "message": "IP blocked successfully",
-        "ip_address": request.ip_address
-    }

@@ -5,9 +5,11 @@ from routes.statistics import router as statistics_router
 from routes.blocked_ips import router as blocked_ips_router
 from routes.block_ip import router as block_ip_router
 
+from config import PROJECT_NAME, PROJECT_VERSION
+
 app = FastAPI(
-    title="AI-Powered Network IDS",
-    version="1.0.0"
+    title=PROJECT_NAME,
+    version=PROJECT_VERSION
 )
 
 app.include_router(alerts_router)
