@@ -11,6 +11,7 @@ sys.path.append(
 )
 
 from alert_logger import save_alert
+from alert_manager import display_alert
 
 
 def detect_flow(flow, source_ip, destination_ip):
@@ -19,8 +20,11 @@ def detect_flow(flow, source_ip, destination_ip):
 
     result = predict_attack(features)
 
-    print("\n===== DETECTION RESULT =====")
-    print(result)
+    display_alert(
+        result,
+        source_ip,
+        destination_ip
+    )
 
     if result["prediction"] == "Attack":
 
@@ -30,7 +34,9 @@ def detect_flow(flow, source_ip, destination_ip):
             attack_type="Detected Threat",
             risk_score=result["risk_score"],
             severity=result["severity"],
-            action=result["action"]
-        )
+            action=result["action"],
+            status="New",
+            recommendation=result["action"]
+       )
 
     return result
